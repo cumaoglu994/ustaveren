@@ -10,7 +10,7 @@ class giris extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Ana Sayfa',
+      title: 'gegis giris',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: const Giris(),
     );
