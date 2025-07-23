@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_application_6/giris.dart';
+import 'package:ustaveren/giris.dart';
 import 'main.dart';  // main.dart dosyasını import ettik
 
 void main() async {
