@@ -1,122 +1,310 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'main1.dart';
+import 'package:firebase_core/firebase_core.dart';
+ import 'package:firebase_auth/firebase_auth.dart';
 
-void main() {
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Giriş Ekranı',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const GirisEkrani(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class GirisEkrani extends StatefulWidget {
+  const GirisEkrani({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<GirisEkrani> createState() => _GirisEkraniState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _GirisEkraniState extends State<GirisEkrani> {
+  final adController = TextEditingController();
+  final soyadController = TextEditingController();
+  final emailController = TextEditingController();
+    final TextEditingController sifreController = TextEditingController();
+  final TextEditingController sifreTekrarController = TextEditingController();
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+void _kayitOl() async {
+   if (sifreController.text != sifreTekrarController.text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Şifreler uyuşmuyor!")),
+    );
+    return;
   }
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    email: emailController.text.trim(),
+    password: sifreController.text.trim(),
+      );
+      
+      print("Kayıt başarılı: ${userCredential.user?.email}");
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Hata: ${e.toString()}")),
+      );
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(
+                'https://idsb.tmgrup.com.tr/ly/uploads/images/2024/07/28/338803.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Kayıt Sayfası',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 33, 66, 40),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: soyadController,
+                  decoration: InputDecoration(
+                    labelText: 'Kullanıcı Adı',
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(255, 3, 240, 244), width: 5),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(255, 30, 173, 101), width: 5),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    fillColor: Color.fromARGB(255, 135, 205, 115),
+                    filled: true,
+                    prefixIcon:
+                        Icon(Icons.person, color: Color.fromARGB(255, 2, 9, 16)),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: 'E-posta veya telefon',
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(255, 81, 219, 221), width: 5),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(255, 30, 173, 101), width: 2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    fillColor: Color.fromARGB(255, 135, 205, 115),
+                    filled: true,
+                    prefixIcon:
+                        Icon(Icons.mail, color: Color.fromARGB(255, 2, 9, 16)),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: sifreController,
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  decoration: InputDecoration(
+                    labelText: 'şifre gir',
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(255, 81, 219, 221), width: 5),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(255, 30, 173, 101), width: 2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    fillColor: Color.fromARGB(255, 135, 205, 115),
+                    filled: true,
+                    prefixIcon:
+                        Icon(Icons.visibility, color: Color.fromARGB(255, 2, 9, 16)),
+                  ),
+                ),
+                 const SizedBox(height: 10),
+                TextField(
+                  controller: sifreTekrarController,
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  decoration: InputDecoration(
+                    labelText: 'şifre tekrar gir',
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(255, 81, 219, 221), width: 5),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(255, 30, 173, 101), width: 2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    fillColor: Color.fromARGB(255, 135, 205, 115),
+                    filled: true,
+                    prefixIcon:
+                        Icon(Icons.visibility, color: Color.fromARGB(255, 2, 9, 16)),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: ()
+                       {
+
+                     _kayitOl();// burda firbase kayıtolmak için kulanılan bir sısınf
+
+
+
+
+
+                        String ad = adController.text;
+                        String soyad = soyadController.text;
+                        String email = emailController.text;
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content:
+                                  Text("Bilgiler alındı: $ad $soyad - $email")),
+                        );
+                      },
+                      child: const Text('Kayıt Ol'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 131, 227, 105),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    TextButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Şifremi unuttum tıklandı')),
+                        );
+                      },
+                      child: const Text(
+                        'Şifremi unuttum?',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 143, 237, 2),
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Google ile kayıt")),
+                        );
+                      },
+                      icon: const Icon(Icons.g_mobiledata),
+                      iconSize: 60,
+                      color: Colors.red,
+                      splashRadius: 25,
+                    ),
+                    const SizedBox(width: 20),
+                    IconButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Facebook ile kayıt")),
+                        );
+                      },
+                      icon: const Icon(Icons.facebook),
+                      iconSize: 50,
+                      color: Color.fromARGB(255, 10, 196, 118),
+                      splashRadius: 25,
+                    ),
+                    const SizedBox(width: 20),
+                    IconButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Twitter ile kayıt")),
+                        );
+                      },
+                      icon: const Icon(Icons.alternate_email),
+                      iconSize: 50,
+                      color: Color.fromARGB(255, 13, 187, 19),
+                      splashRadius: 25,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Hesabınız varsa giriş yapınız.',
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: Color.fromARGB(179, 255, 255, 255)),
+                    ),
+                    const SizedBox(width: 10),
+                   ElevatedButton(
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Main1()),
+    );
+  },
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.transparent,
+    shadowColor: Colors.transparent,
+    elevation: 0,
+    side: const BorderSide(
+      color: Color.fromARGB(255, 4, 52, 49), width: 2),
+  ),
+  child: const Text(
+    'Giriş Yap',
+    style: TextStyle(color: Color.fromARGB(255, 5, 216, 110)),
+  ),
+)
+                  ],
+                )
+              ],
             ),
-          ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
