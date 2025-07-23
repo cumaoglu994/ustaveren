@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'main1.dart';
+import 'login_screen.dart' show LoginScreen;
 import 'package:firebase_core/firebase_core.dart';
- import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
@@ -17,9 +16,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Giriş Ekranı',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const GirisEkrani(),
+      title: 'UstaVeren',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: const Color.fromARGB(255, 185, 235, 252),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color.fromARGB(255, 185, 235, 252),
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
+      ),
+      home: const LoginScreen(),
     );
   }
 }
@@ -35,31 +46,30 @@ class _GirisEkraniState extends State<GirisEkrani> {
   final adController = TextEditingController();
   final soyadController = TextEditingController();
   final emailController = TextEditingController();
-    final TextEditingController sifreController = TextEditingController();
+  final TextEditingController sifreController = TextEditingController();
   final TextEditingController sifreTekrarController = TextEditingController();
 
-void _kayitOl() async {
-   if (sifreController.text != sifreTekrarController.text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Şifreler uyuşmuyor!")),
-    );
-    return;
-  }
+  void _kayitOl() async {
+    if (sifreController.text != sifreTekrarController.text) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Şifreler uyuşmuyor!")));
+      return;
+    }
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-    email: emailController.text.trim(),
-    password: sifreController.text.trim(),
-      );
-      
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: sifreController.text.trim(),
+          );
+
       print("Kayıt başarılı: ${userCredential.user?.email}");
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Hata: ${e.toString()}")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Hata: ${e.toString()}")));
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +78,8 @@ void _kayitOl() async {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-                'https://idsb.tmgrup.com.tr/ly/uploads/images/2024/07/28/338803.jpg'),
+              'https://idsb.tmgrup.com.tr/ly/uploads/images/2024/07/28/338803.jpg',
+            ),
             fit: BoxFit.cover,
           ),
         ),
@@ -95,18 +106,24 @@ void _kayitOl() async {
                     labelText: 'Kullanıcı Adı',
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Color.fromARGB(255, 3, 240, 244), width: 5),
+                        color: Color.fromARGB(255, 3, 240, 244),
+                        width: 5,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Color.fromARGB(255, 30, 173, 101), width: 5),
+                        color: Color.fromARGB(255, 30, 173, 101),
+                        width: 5,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     fillColor: Color.fromARGB(255, 135, 205, 115),
                     filled: true,
-                    prefixIcon:
-                        Icon(Icons.person, color: Color.fromARGB(255, 2, 9, 16)),
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: Color.fromARGB(255, 2, 9, 16),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -116,68 +133,82 @@ void _kayitOl() async {
                     labelText: 'E-posta veya telefon',
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Color.fromARGB(255, 81, 219, 221), width: 5),
+                        color: Color.fromARGB(255, 81, 219, 221),
+                        width: 5,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Color.fromARGB(255, 30, 173, 101), width: 2),
+                        color: Color.fromARGB(255, 30, 173, 101),
+                        width: 2,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     fillColor: Color.fromARGB(255, 135, 205, 115),
                     filled: true,
-                    prefixIcon:
-                        Icon(Icons.mail, color: Color.fromARGB(255, 2, 9, 16)),
+                    prefixIcon: Icon(
+                      Icons.mail,
+                      color: Color.fromARGB(255, 2, 9, 16),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: sifreController,
                   keyboardType: TextInputType.phone,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     labelText: 'şifre gir',
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Color.fromARGB(255, 81, 219, 221), width: 5),
+                        color: Color.fromARGB(255, 81, 219, 221),
+                        width: 5,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Color.fromARGB(255, 30, 173, 101), width: 2),
+                        color: Color.fromARGB(255, 30, 173, 101),
+                        width: 2,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     fillColor: Color.fromARGB(255, 135, 205, 115),
                     filled: true,
-                    prefixIcon:
-                        Icon(Icons.visibility, color: Color.fromARGB(255, 2, 9, 16)),
+                    prefixIcon: Icon(
+                      Icons.visibility,
+                      color: Color.fromARGB(255, 2, 9, 16),
+                    ),
                   ),
                 ),
-                 const SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   controller: sifreTekrarController,
                   keyboardType: TextInputType.phone,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     labelText: 'şifre tekrar gir',
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Color.fromARGB(255, 81, 219, 221), width: 5),
+                        color: Color.fromARGB(255, 81, 219, 221),
+                        width: 5,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color: Color.fromARGB(255, 30, 173, 101), width: 2),
+                        color: Color.fromARGB(255, 30, 173, 101),
+                        width: 2,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     fillColor: Color.fromARGB(255, 135, 205, 115),
                     filled: true,
-                    prefixIcon:
-                        Icon(Icons.visibility, color: Color.fromARGB(255, 2, 9, 16)),
+                    prefixIcon: Icon(
+                      Icons.visibility,
+                      color: Color.fromARGB(255, 2, 9, 16),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -185,14 +216,8 @@ void _kayitOl() async {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: ()
-                       {
-
-                     _kayitOl();// burda firbase kayıtolmak için kulanılan bir sısınf
-
-
-
-
+                      onPressed: () {
+                        _kayitOl(); // burda firbase kayıtolmak için kulanılan bir sısınf
 
                         String ad = adController.text;
                         String soyad = soyadController.text;
@@ -200,8 +225,10 @@ void _kayitOl() async {
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                              content:
-                                  Text("Bilgiler alındı: $ad $soyad - $email")),
+                            content: Text(
+                              "Bilgiler alındı: $ad $soyad - $email",
+                            ),
+                          ),
                         );
                       },
                       child: const Text('Kayıt Ol'),
@@ -214,7 +241,8 @@ void _kayitOl() async {
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                              content: Text('Şifremi unuttum tıklandı')),
+                            content: Text('Şifremi unuttum tıklandı'),
+                          ),
                         );
                       },
                       child: const Text(
@@ -275,31 +303,38 @@ void _kayitOl() async {
                     const Text(
                       'Hesabınız varsa giriş yapınız.',
                       style: TextStyle(
-                          fontSize: 15,
-                          color: Color.fromARGB(179, 255, 255, 255)),
+                        fontSize: 15,
+                        color: Color.fromARGB(179, 255, 255, 255),
+                      ),
                     ),
                     const SizedBox(width: 10),
-                   ElevatedButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Main1()),
-    );
-  },
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.transparent,
-    shadowColor: Colors.transparent,
-    elevation: 0,
-    side: const BorderSide(
-      color: Color.fromARGB(255, 4, 52, 49), width: 2),
-  ),
-  child: const Text(
-    'Giriş Yap',
-    style: TextStyle(color: Color.fromARGB(255, 5, 216, 110)),
-  ),
-)
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        elevation: 0,
+                        side: const BorderSide(
+                          color: Color.fromARGB(255, 4, 52, 49),
+                          width: 2,
+                        ),
+                      ),
+                      child: const Text(
+                        'Giriş Yap',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 5, 216, 110),
+                        ),
+                      ),
+                    ),
                   ],
-                )
+                ),
               ],
             ),
           ),
