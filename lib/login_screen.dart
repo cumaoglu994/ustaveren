@@ -1,36 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:ustaveren/giris.dart';
-import 'main.dart';  // main.dart dosyasını import ettik
+import 'package:ustaveren/main_app.dart' show MainApp;
+import 'main.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const Main1());
-}
-
-class Main1 extends StatelessWidget {
-  const Main1({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Giriş Ekranı',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const GirisEkrania(),
-    );
-  }
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class GirisEkrania extends StatefulWidget {
-  const GirisEkrania({super.key});
-
-  @override
-  State<GirisEkrania> createState() => _GirisEkraniaState();
-}
-
-class _GirisEkraniaState extends State<GirisEkrania> {
+class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final sifreController = TextEditingController();
 
@@ -51,18 +31,18 @@ class _GirisEkraniaState extends State<GirisEkrania> {
         password: sifre,
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Giriş başarılı!")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Giriş başarılı!")));
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const giris()),
+        MaterialPageRoute(builder: (context) => const MainApp()),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Hata: ${e.toString()}")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Hata: ${e.toString()}")));
     }
   }
 
@@ -73,7 +53,8 @@ class _GirisEkraniaState extends State<GirisEkrania> {
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-                'https://st.depositphotos.com/2390789/55852/i/450/depositphotos_558523060-stock-photo-ulu-cami-diyarbakir-grand-mosque.jpg'),
+              'https://st.depositphotos.com/2390789/55852/i/450/depositphotos_558523060-stock-photo-ulu-cami-diyarbakir-grand-mosque.jpg',
+            ),
             fit: BoxFit.cover,
           ),
         ),
@@ -98,12 +79,16 @@ class _GirisEkraniaState extends State<GirisEkrania> {
                     labelText: 'E-posta',
                     enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(
-                          color: Color.fromARGB(255, 81, 219, 221), width: 2),
+                        color: Color.fromARGB(255, 81, 219, 221),
+                        width: 2,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: const BorderSide(
-                          color: Color.fromARGB(255, 30, 173, 101), width: 2),
+                        color: Color.fromARGB(255, 30, 173, 101),
+                        width: 2,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     fillColor: Colors.white,
@@ -119,12 +104,16 @@ class _GirisEkraniaState extends State<GirisEkrania> {
                     labelText: 'Şifre',
                     enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(
-                          color: Color.fromARGB(255, 81, 219, 221), width: 2),
+                        color: Color.fromARGB(255, 81, 219, 221),
+                        width: 2,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: const BorderSide(
-                          color: Color.fromARGB(255, 30, 173, 101), width: 2),
+                        color: Color.fromARGB(255, 30, 173, 101),
+                        width: 2,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     fillColor: Colors.white,
@@ -140,14 +129,21 @@ class _GirisEkraniaState extends State<GirisEkrania> {
                       onPressed: _girisYap,
                       child: const Text('Giriş Yap'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 131, 227, 105),
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          131,
+                          227,
+                          105,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 100),
                     TextButton(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Şifremi unuttum tıklandı')),
+                          const SnackBar(
+                            content: Text('Şifremi unuttum tıklandı'),
+                          ),
                         );
                       },
                       child: const Text(
@@ -205,17 +201,18 @@ class _GirisEkraniaState extends State<GirisEkrania> {
                     const Text(
                       'Hesabınız yoksa kayıt yapınız.',
                       style: TextStyle(
-                          fontSize: 15,
-                          color: Color.fromARGB(179, 255, 255, 255)),
+                        fontSize: 15,
+                        color: Color.fromARGB(179, 255, 255, 255),
+                      ),
                     ),
                     const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () {
-                        // Burada kayıt sayfasına yönlendirme yapılacak:
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const GirisEkrani()),
-                          // main.dart içindeki kayıt ekranı widget'ı Main olarak varsayıldı
+                          MaterialPageRoute(
+                            builder: (context) => const GirisEkrani(),
+                          ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -223,21 +220,26 @@ class _GirisEkraniaState extends State<GirisEkrania> {
                         shadowColor: Colors.transparent,
                         elevation: 0,
                         side: const BorderSide(
-                            color: Color.fromARGB(255, 4, 52, 49), width: 2),
+                          color: Color.fromARGB(255, 4, 52, 49),
+                          width: 2,
+                        ),
                       ),
                       child: const Text(
                         'Kayıt Yap',
-                        style:
-                            TextStyle(color: Color.fromARGB(255, 5, 216, 110)),
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 5, 216, 110),
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(height: 50),
                 const Text(
                   '© 2025 Şirket Adı Tüm hakları saklıdır.',
                   style: TextStyle(
-                      fontSize: 15, color: Color.fromARGB(179, 255, 255, 255)),
+                    fontSize: 15,
+                    color: Color.fromARGB(179, 255, 255, 255),
+                  ),
                 ),
               ],
             ),
