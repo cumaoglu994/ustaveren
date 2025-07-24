@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'main1.dart';
 import 'package:firebase_core/firebase_core.dart';
  import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 void main() async{
@@ -32,26 +33,58 @@ class GirisEkrani extends StatefulWidget {
 }
 
 class _GirisEkraniState extends State<GirisEkrani> {
+  // Controller'lar burda
+
   final adController = TextEditingController();
   final soyadController = TextEditingController();
   final emailController = TextEditingController();
-    final TextEditingController sifreController = TextEditingController();
-  final TextEditingController sifreTekrarController = TextEditingController();
+  final sifreController = TextEditingController();
+  final sifreTekrarController = TextEditingController();
 
-void _kayitOl() async {
-   if (sifreController.text != sifreTekrarController.text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Şifreler uyuşmuyor!")),
-    );
-    return;
+  // Firestore referansı (sınıf değişkeni olarak tanımlanabilir)
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  // Kullanıcı bilgilerini Firestore'a kaydeden fonksiyon (class içinde ama fonksiyon dışı)
+  Future<void> kullaniciKaydet(String kullaniciAdi, String email, String uid) async {
+    await firestore.collection('buyers').doc(uid).set({
+      'kullaniciAdi': kullaniciAdi,
+      'buyerId': uid,
+      'address': '',
+      'hizmetTuru': ' veren',
+      'phone': '',
+      'email': email,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
   }
+
+  // Kullanıcı kayıt fonksiyonu
+  void _kayitOl() async {
+    if (sifreController.text != sifreTekrarController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Şifreler uyuşmuyor!")),
+      );
+      return;
+    }
+
     try {
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-    email: emailController.text.trim(),
-    password: sifreController.text.trim(),
+        email: emailController.text.trim(),
+        password: sifreController.text.trim(),
       );
-      
-      print("Kayıt başarılı: ${userCredential.user?.email}");
+
+      String uid = userCredential.user!.uid;
+      String kullaniciAdi = soyadController.text.trim();
+      String email = emailController.text.trim();
+
+      // Firestore'a kullanıcı bilgilerini kaydet
+      await kullaniciKaydet(kullaniciAdi, email, uid);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Kayıt başarılı: $email")),
+      );
+
+      // İstersen burda başka sayfaya yönlendirme yapabilirsin
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Hata: ${e.toString()}")),
