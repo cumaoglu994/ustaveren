@@ -6,13 +6,9 @@ import 'mesajlarim.dart';
 import 'profilim.dart';
 import 'hizmetlerim.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
 // Ana uygulama widget'ı (StatelessWidget olarak iyi seçilmiş)
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -95,10 +91,12 @@ class _MainPageState extends State<MainPage> {
                   icon: const Icon(Icons.settings),
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Ayarlar butonuna tıklandı")),
+                      const SnackBar(
+                        content: Text("Ayarlar butonuna tıklandı"),
+                      ),
                     );
                   },
-                )
+                ),
               ]
             : null,
       ),
@@ -116,22 +114,13 @@ class _MainPageState extends State<MainPage> {
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Ana Sayfa",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Ana Sayfa"),
           BottomNavigationBarItem(
             icon: Icon(Icons.build),
             label: "Hizmetlerim",
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: "Mesajlar",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profilim",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.message), label: "Mesajlar"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profilim"),
         ],
       ),
     );
