@@ -59,6 +59,7 @@ class _GirisEkraniState extends State<GirisEkrani> {
       'address': '',
       'hizmetTuru': 'veren',
       'phone': '',
+      
       'email': email,
       'createdAt': FieldValue.serverTimestamp(),
     });
